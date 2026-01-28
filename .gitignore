@@ -1,0 +1,38 @@
+# Local .terraform directory
+.terraform/
+
+# Terraform plan and state files
+*.tfstate
+*.tfstate.*
+*.tfplan
+
+# Crash logs
+crash.log
+*.tf.log
+
+# Sensitive override files
+# *.auto.tfvars
+# *.auto.tfvars.json
+#terraform.tfvars
+terraform.tfvars.json
+
+# Backup files
+*.backup
+*.bak
+
+# Lock file (optional: keep if you're using it to pin provider versions)
+.terraform.lock.hcl
+
+# Core dumps and OS metadata
+core
+.DS_Store
+Thumbs.db
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.sublime-workspace
+*.sublime-projec*
