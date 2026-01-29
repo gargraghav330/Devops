@@ -1,0 +1,80 @@
+# terraform.tfvars - Fargate-only configuration example
+# (EC2 capacity providers and ASGs are completely disabled)
+
+# ── General & Cluster ───────────────────────────────────────────────────────
+region       = "ca-central-1"
+environment  = "dev"
+cluster_name = "dev-ecs-self-managed"
+enabled      = true
+
+ecs_settings_enabled = "enabled" # Container Insights
+
+# ── EC2 enabled ────────────────────────────────────────────────────
+ec2_cluster_enabled = true
+
+ec2_on_demand_capacity_provider = "ec2-on-demand-ecs"
+ec2_spot_capacity_provider      = "ec2-spot-ecs"
+
+# EC2 AutoScaling Group configuration
+ec2_instance_type           = "t3.micro"
+enable_ecs_instance_cw_logs = true
+
+# On-demand ASG settings
+ec2_on_demand_min     = 1
+ec2_on_demand_max     = 3
+ec2_on_demand_desired = 2
+
+# Spot ASG settings
+ec2_spot_min     = 2
+ec2_spot_max     = 3
+ec2_spot_desired = 3
+
+# ── Networking ──────────────────────────────────────────────────────────────
+vpc_cidr_block = "10.0.0.0/16"
+vpc_name       = "dev-ecs-vpc"
+
+private_subnet_cidr_blocks = ["10.0.1.0/24", "10.0.2.0/24"]
+public_subnet_cidr_blocks  = ["10.0.3.0/24", "10.0.4.0/24"]
+
+network_mode = "bridge"
+
+assign_public_ip = true
+
+# ── Logging & Tags ──────────────────────────────────────────────────────────
+log_retention_days = 30
+kms_key_arn        = ""
+
+tags = {
+  environment = "dev"
+  ManagedBy   = "Terraform"
+}
+
+# ── Service Deployment Defaults ─────────────────────────────────────────────
+scheduling_strategy     = "REPLICA"
+propagate_tags          = "SERVICE"
+enable_ecs_managed_tags = true
+
+
+# ── Services Configuration ───────────────────────────────────
+container_definitions_files = [
+  {
+    file_path     = "./task-definition-1.json"
+    service_name  = "webapp"
+    desired_count = 2
+    weight_normal = 2
+    weight_spot   = 0
+    cpu           = 1024
+    memory        = 2048
+  },
+  {
+    file_path = "./task-definition-2.json"
+    # Uses defaults: desired_count=1, weight_normal=1, weight_spot=0
+    cpu    = 512
+    memory = 1024
+  }
+]
+
+enable_ec2_self_managed_scaling = true
+enable_task_autoscaling         = true
+task_autoscaling_min_capacity   = 1
+task_autoscaling_max_capacity   = 5
